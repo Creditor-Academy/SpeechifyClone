@@ -121,26 +121,56 @@ export default function MainSection() {
 
   return (
     <section className="relative w-full min-h-screen overflow-hidden">
-      {/* Video background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-      >
-        <source src="https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/course-bg-dark.mp4" type="video/mp4" />
-      </video>
+      {/* Dark blue gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950"></div>
       
-      {/* Dark overlay to ensure text readability */}
-      <div className="absolute inset-0 bg-slate-900/60"></div>
-      
-      {/* Animated wave effect */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 overflow-hidden">
-        <div className="absolute -bottom-10 left-0 w-full h-40 bg-gradient-to-t from-blue-500/20 to-transparent animate-pulse"></div>
-        <div className="absolute -bottom-5 left-0 w-full h-32 bg-gradient-to-t from-indigo-400/30 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
-        <div className="absolute -bottom-2 left-0 w-full h-24 bg-gradient-to-t from-cyan-400/20 to-transparent animate-pulse" style={{animationDelay: '2s'}}></div>
+      {/* Animated floating headphones */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Headphone 1 */}
+        <div className="absolute top-20 left-10 animate-float opacity-10">
+          <svg className="h-32 w-32 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/>
+          </svg>
+        </div>
+        
+        {/* Headphone 2 */}
+        <div className="absolute top-40 right-20 animate-float-delayed opacity-10" style={{animationDelay: '2s'}}>
+          <svg className="h-40 w-40 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/>
+          </svg>
+        </div>
+        
+        {/* Headphone 3 */}
+        <div className="absolute bottom-32 left-1/4 animate-float opacity-10" style={{animationDelay: '4s'}}>
+          <svg className="h-36 w-36 text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/>
+          </svg>
+        </div>
+
+        {/* Headphone 4 */}
+        <div className="absolute top-1/2 right-1/4 animate-float opacity-10" style={{animationDelay: '6s'}}>
+          <svg className="h-28 w-28 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/>
+          </svg>
+        </div>
       </div>
+      
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-25px) rotate(-5deg); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float-delayed 7s ease-in-out infinite;
+        }
+      `}</style>
 
       <div className="relative mx-auto max-w-7xl px-4 py-16 lg:px-6">
         {/* Horizontal timeline tracker */}
@@ -148,19 +178,19 @@ export default function MainSection() {
           <div className="flex items-center space-x-4">
             {[1, 2, 3].map((stepNum) => (
               <div key={stepNum} className="flex items-center">
-                <div className={`relative flex h-12 w-12 items-center justify-center rounded-full transition-all duration-500 ${
+                <div className={`relative flex h-16 w-16 items-center justify-center rounded-full transition-all duration-500 ${
                   step >= stepNum 
                     ? 'bg-gradient-to-r from-cyan-400 to-blue-500 ring-2 ring-cyan-400/30' 
                     : 'bg-white/10 backdrop-blur-sm ring-1 ring-white/20'
                 }`}>
-                  <span className={`text-sm font-bold ${
+                  <span className={`text-lg font-bold ${
                     step >= stepNum ? 'text-white' : 'text-white/60'
                   }`}>
                     {stepNum}
                   </span>
                 </div>
                 {stepNum < 3 && (
-                  <div className={`h-0.5 w-16 transition-all duration-500 ${
+                  <div className={`h-1 w-24 transition-all duration-500 ${
                     step > stepNum 
                       ? 'bg-gradient-to-r from-cyan-400 to-blue-500' 
                       : 'bg-white/20'
@@ -333,7 +363,7 @@ export default function MainSection() {
                     }
                   }}
                   className={`relative w-full overflow-hidden rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
-                    isRecording ? 'bg-red-600' : 'bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600'
+                    isRecording ? 'bg-red-600' : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700'
                   }`}
                 >
                   <span className="inline-flex items-center gap-2">
@@ -353,7 +383,7 @@ export default function MainSection() {
               {/* Upload */}
               <div className="rounded-xl bg-white/5 p-4 ring-1 ring-white/10 backdrop-blur">
                 <p className="mb-3 text-sm font-medium text-white">Upload Voice Sample</p>
-                <label className="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-white/20 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10">
+                <label className="inline-flex w-full cursor-pointer items-center justify-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:from-cyan-600 hover:to-blue-700">
                   <input
                     ref={voiceUploadRef}
                     type="file"
@@ -435,51 +465,89 @@ export default function MainSection() {
             }
           >
 
-            <button
-              onClick={() => {
-                setIsGenerating(true)
-                setTimeout(() => setIsGenerating(false), 1500)
-              }}
-              className="mt-4 inline-flex items-center justify-center rounded-md bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:from-indigo-700 hover:to-indigo-600"
-            >
-              Generate Audio
-            </button>
+            {/* Generate button */}
+            <div className="flex justify-center">
+              <button
+                onClick={() => {
+                  setIsGenerating(true)
+                  setTimeout(() => setIsGenerating(false), 2000)
+                }}
+                disabled={isGenerating}
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-3 text-base font-semibold text-white shadow-lg transition hover:from-cyan-600 hover:to-blue-700 hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {isGenerating ? (
+                  <>
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                    Generating…
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                    Generate Audio
+                  </>
+                )}
+              </button>
+            </div>
 
-            {isGenerating && (
-              <div className="mt-4 inline-flex items-center gap-2 text-sm text-gray-600">
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent"></span>
-                Generating…
-              </div>
-            )}
-
-            <div className="mt-6 rounded-lg border border-gray-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Course Audio Preview</p>
-                  <p className="text-xs text-gray-500">intro-lesson.mp3</p>
-                </div>
-                <div>
-                  <select className="rounded-md border border-gray-200 bg-white p-2 text-xs text-gray-700 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
-                    <option>1x</option>
-                    <option>1.5x</option>
-                    <option>2x</option>
+            {/* Audio player card */}
+            {!isGenerating && (
+              <div className="mt-8 rounded-xl bg-white/5 p-6 ring-1 ring-white/10 backdrop-blur">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-base font-semibold text-white">Course Audio Preview</p>
+                    <p className="text-xs text-white/60 mt-1">intro-lesson.mp3</p>
+                  </div>
+                  <select className="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white outline-none backdrop-blur transition hover:bg-white/20 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/40">
+                    <option className="bg-slate-800">1x</option>
+                    <option className="bg-slate-800">1.5x</option>
+                    <option className="bg-slate-800">2x</option>
                   </select>
                 </div>
-              </div>
 
-              <div className="mt-4 h-20 w-full rounded-md bg-gradient-to-r from-indigo-100 via-indigo-50 to-indigo-100"></div>
-
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <button className="rounded-md border border-gray-300 px-3 py-2 text-xs font-medium text-gray-900 hover:bg-gray-50">Prev</button>
-                  <button className="rounded-md bg-gray-900 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800">Play</button>
-                  <button className="rounded-md border border-gray-300 px-3 py-2 text-xs font-medium text-gray-900 hover:bg-gray-50">Next</button>
+                {/* Waveform visualization */}
+                <div className="mt-6 h-24 w-full rounded-lg bg-gradient-to-r from-cyan-400/20 via-blue-500/20 to-indigo-500/20 p-1 ring-1 ring-white/10">
+                  <div className="flex h-full items-end justify-around gap-1 px-2">
+                    {Array.from({ length: 60 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-1 rounded-full bg-gradient-to-t from-cyan-400 to-blue-500"
+                        style={{ height: `${Math.random() * 80 + 20}%` }}
+                      />
+                    ))}
+                  </div>
                 </div>
-                <button className="rounded-md bg-gradient-to-r from-indigo-600 to-indigo-500 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:from-indigo-700 hover:to-indigo-600">
-                  Download MP3
-                </button>
+
+                {/* Controls */}
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-2">
+                    <button className="rounded-lg border border-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/10">
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                      </svg>
+                    </button>
+                    <button className="rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-2 text-sm font-semibold text-white transition hover:from-cyan-600 hover:to-blue-700">
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </button>
+                    <button className="rounded-lg border border-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/10">
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z" />
+                      </svg>
+                    </button>
+                  </div>
+                  <button className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-2 text-sm font-semibold text-white transition hover:from-emerald-600 hover:to-green-700">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download MP3
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="mt-8 flex justify-end">
               <button onClick={() => setStep(1)} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-green-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:from-emerald-500 hover:to-green-600 hover:scale-105">
