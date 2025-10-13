@@ -1,81 +1,118 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function HeroSection() {
+  const [text1, setText1] = useState("");
+  const [startTyping, setStartTyping] = useState(false);
+
+  const fullText1 = "Listen to Anything Anywhere";
+
+  useEffect(() => {
+    // Start typing AFTER a brief delay
+    const delayBeforeTyping = setTimeout(() => setStartTyping(true), 1000);
+    return () => clearTimeout(delayBeforeTyping);
+  }, []);
+
+  useEffect(() => {
+    if (startTyping) {
+      let i = 0;
+      const typing1 = setInterval(() => {
+        if (i < fullText1.length) {
+          setText1(fullText1.slice(0, i + 1));
+          i++;
+        } else {
+          clearInterval(typing1);
+        }
+      }, 70);
+    }
+  }, [startTyping]);
+
   return (
-    <section className="relative w-full overflow-hidden flex flex-col md:flex-row items-center justify-between px-8 md:px-16 py-20 bg-gradient-to-r from-indigo-100 via-white to-green-100 animate-gradient">
-      {/* Background Glow Circles */}
-      <div className="absolute top-10 left-10 w-64 h-64 bg-indigo-400/30 rounded-full blur-3xl animate-glow"></div>
-      <div className="absolute bottom-10 right-10 w-72 h-72 bg-green-300/30 rounded-full blur-3xl animate-glow"></div>
+    <section className="relative flex flex-col md:flex-row items-center justify-between px-8 md:px-16 py-20 overflow-hidden bg-gradient-to-r from-white via-blue-50 to-blue-100">
+      {/* Animations */}
+      <style>{`
+        @keyframes float1 {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-14px); }
+        }
+        @keyframes float2 {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+        }
+        @keyframes float3 {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-18px); }
+        }
+        @keyframes blink {
+          50% { opacity: 0; }
+        }
+      `}</style>
 
-      {/* Left Text Section */}
-      <div className="flex-1 max-w-lg space-y-6 z-10">
-        <h1 className="text-4xl md:text-6xl font-normal text-gray-900 leading-tight">
-          Listen to Anything{" "}
-          <span className="text-green-600">Anywhere</span>
+      {/* LEFT SIDE */}
+      <div className="flex-1 max-w-lg space-y-6 transition-all duration-1000 opacity-100 translate-y-0">
+        {/* Typing animation FIRST */}
+        <h1 className="text-4xl md:text-6xl font-semibold text-blue-800 leading-tight">
+          <span className="block">
+            {text1}
+            {startTyping && text1 !== fullText1 && (
+              <span
+                className="inline-block align-baseline ml-1 bg-blue-800 animate-[blink_1s_infinite]"
+                style={{
+                  width: "2px",
+                  height: "1.1em",
+                  verticalAlign: "middle",
+                }}
+              />
+            )}
+          </span>
         </h1>
-        <p className="text-gray-600 text-base md:text-lg leading-relaxed">
-          Experience audio like never before. 
-          Stream, listen, and enjoy your favorite content from anywhere in the world.
-        </p>
 
-        <div className="flex gap-4 pt-4">
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-lg shadow-lg transition">
-            Start Listening
-          </button>
-          <button className="border border-gray-300 hover:bg-gray-100 text-gray-800 font-medium px-6 py-3 rounded-lg transition">
-            Explore
-          </button>
+        {/* Paragraph & Buttons BELOW */}
+        <div className="transition-all duration-700 opacity-100 translate-y-0">
+          <p className="text-blue-800/80 text-base md:text-lg leading-relaxed mt-4">
+            Experience audio like never before. Stream, listen, and enjoy your
+            favorite content from anywhere in the world.
+          </p>
+
+          <div className="flex gap-4 pt-6">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl shadow-md transition">
+              Explore More
+            </button>
+            <button className="border border-blue-300 hover:bg-blue-50 text-blue-700 font-medium px-6 py-3 rounded-xl transition">
+              Learn More
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Right Animated Images Section */}
-      <div className="flex-1 flex justify-center items-center mt-10 md:mt-0 relative z-10">
-        {/* Image 1 (Large Floating) */}
-        <img
-          src="https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/Cel3.jpg"
-          alt="AI Companion 1"
-          className="w-48 md:w-56 rounded-2xl shadow-lg animate-float-slow mr-6"
-        />
+      {/* RIGHT SIDE — Floating Images */}
+      <div className="flex-1 grid grid-cols-2 gap-8 justify-center items-center mt-12 md:mt-0 relative transition-all duration-1000 opacity-100">
+        {/* Top Left */}
+        <div className="w-[180px] h-[200px] md:w-[210px] md:h-[230px] rounded-3xl overflow-hidden shadow-xl bg-blue-100 animate-[float1_5s_ease-in-out_infinite]">
+          <img
+            src="https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/Cel3.jpg"
+            alt="Student 1"
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-        {/* Image 2 (Middle Floating) */}
-        <img
-          src="https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/Cel2.jpg"
-          alt="AI Companion 2"
-          className="w-40 md:w-48 rounded-2xl shadow-md animate-float-slower"
-        />
+        {/* Top Right */}
+        <div className="w-[180px] h-[200px] md:w-[210px] md:h-[230px] rounded-3xl overflow-hidden shadow-xl bg-blue-200 mt-10 animate-[float2_6s_ease-in-out_infinite]">
+          <img
+            src="https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/Cel2.jpg"
+            alt="Student 2"
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-        {/* Image 3 (Small Floating) */}
-        <img
-          src="https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/Cel1.jpg"
-          alt="AI Companion 3"
-          className="w-32 md:w-40 rounded-2xl shadow-md absolute bottom-0 right-0 animate-float-slowest"
-        />
+        {/* Bottom Center */}
+        <div className="absolute bottom-[-50px] left-[90px] md:left-[120px] w-[220px] h-[220px] md:w-[250px] md:h-[250px] rounded-3xl overflow-hidden shadow-xl bg-blue-300 animate-[float3_7s_ease-in-out_infinite]">
+          <img
+            src="https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/Cel1.jpg"
+            alt="Student 3"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
-
-      {/* Floating Animations */}
-      <style jsx>{`
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
-        }
-        @keyframes float-slower {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        @keyframes float-slowest {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-6px); }
-        }
-        .animate-float-slow {
-          animation: float-slow 5s ease-in-out infinite;
-        }
-        .animate-float-slower {
-          animation: float-slower 6s ease-in-out infinite;
-        }
-        .animate-float-slowest {
-          animation: float-slowest 7s ease-in-out infinite;
-        }
-      `}</style>
     </section>
   );
 }
