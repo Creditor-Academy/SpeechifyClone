@@ -3,7 +3,7 @@ import InstructionCarousel from "./instruction"
 
 
 
-function StepCard({ children, stepNumber, title, icon, description }) {
+function StepCard({ children, title, icon, description }) {
   const [visible, setVisible] = useState(false)
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 10)
@@ -38,48 +38,11 @@ export default function MainSection() {
   const [uploadedFiles, setUploadedFiles] = useState([])
   const [isDragging, setIsDragging] = useState(false)
   const [selectedAvatarIndex, setSelectedAvatarIndex] = useState(null)
-  const [isRecording, setIsRecording] = useState(false)
-  const [recordedClip, setRecordedClip] = useState(null)
   const [uploadedVoiceFile, setUploadedVoiceFile] = useState(null)
+  const [voiceMode, setVoiceMode] = useState('celebrity') // 'celebrity' or 'upload'
+  const [playingVoice, setPlayingVoice] = useState(null)
   const fileInputRef = useRef(null)
   const voiceUploadRef = useRef(null)
-  const mediaRecorderRef = useRef(null)
-  const audioChunksRef = useRef([])
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      mediaRecorderRef.current = new MediaRecorder(stream)
-      audioChunksRef.current = []
-
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        audioChunksRef.current.push(event.data)
-      }
-
-      mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
-        const duration = Math.floor(audioChunksRef.current.length / 2) // rough estimate
-        setRecordedClip({ name: 'Recorded clip', duration: `00:${String(duration).padStart(2, '0')}`, blob: audioBlob })
-        stream.getTracks().forEach(track => track.stop())
-      }
-
-      mediaRecorderRef.current.start()
-      setIsRecording(true)
-      setRecordedClip(null)
-      setUploadedVoiceFile(null)
-      setSelectedAvatarIndex(null)
-    } catch (err) {
-      console.error('Microphone access denied or error:', err)
-      alert('Microphone permission is required to record audio.')
-    }
-  }
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop()
-      setIsRecording(false)
-    }
-  }
 
   const handleBrowseClick = () => fileInputRef.current?.click()
 
@@ -167,11 +130,22 @@ export default function MainSection() {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(-25px) rotate(-5deg); }
         }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes soundWave {
+          0% { height: 20%; }
+          100% { height: 90%; }
+        }
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
         .animate-float-delayed {
           animation: float-delayed 7s ease-in-out infinite;
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out;
         }
       `}</style>
 
@@ -319,134 +293,291 @@ export default function MainSection() {
             }
           >
 
-            {/* Top: Character choices (circular avatars) */}
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {[
-                { src: 'https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/char1.jpg', label: 'Character 1' },
-                { src: 'https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/char2.jpg', label: 'Character 2' },
-                { src: 'https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/char3.jpg', label: 'Character 3' },
-                { src: 'https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/download+(1).jpg', label: 'Character 4' },
-              ].map((c, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => { setSelectedAvatarIndex(i); setRecordedClip(null); setUploadedVoiceFile(null) }}
-                  className={`group flex flex-col items-center gap-2 rounded-xl p-3 transition ${
-                    selectedAvatarIndex === i ? 'bg-white/10 ring-1 ring-cyan-400/40' : 'bg-white/5 ring-1 ring-white/10 hover:bg-white/10'
-                  }`}
-                >
-                  <div className={`relative h-24 w-24 overflow-hidden rounded-full ring-2 ${
-                    selectedAvatarIndex === i ? 'ring-cyan-400' : 'ring-white/20'
-                  }`}>
-                    <img src={c.src} alt={c.label} className="h-full w-full object-cover" />
+            {/* Voice Selection with Toggle */}
+            <div className="space-y-8">
+              
+              {/* Toggle Switch */}
+              <div className="flex justify-center">
+                <div className="inline-flex rounded-2xl bg-white/5 p-1.5 ring-1 ring-white/10 backdrop-blur-xl">
+                  <button
+                    onClick={() => setVoiceMode('celebrity')}
+                    className={`relative px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
+                      voiceMode === 'celebrity'
+                        ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
+                        : 'text-white/60 hover:text-white/90'
+                    }`}
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                      </svg>
+                      Celebrity Voices
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setVoiceMode('upload')}
+                    className={`relative px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
+                      voiceMode === 'upload'
+                        ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
+                        : 'text-white/60 hover:text-white/90'
+                    }`}
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                      Upload Your Voice
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Celebrity Voices Section */}
+              {voiceMode === 'celebrity' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="text-center">
+                    <h3 className="text-lg font-bold text-white mb-2">Select Your Perfect Voice</h3>
+                    <p className="text-sm text-white/60">Choose from our collection of premium AI voices</p>
                   </div>
-                  <div className="text-center text-xs font-medium text-white/90">{c.label}</div>
-                </button>
-              ))}
-            </div>
 
-            {/* OR divider */}
-            <div className="my-6 flex items-center gap-3">
-              <div className="h-px flex-1 bg-white/15" />
-              <span className="text-xs font-semibold tracking-wide text-white/70">OR</span>
-              <div className="h-px flex-1 bg-white/15" />
-            </div>
+                  {/* 4-column celebrity voice grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+                    {[
+                      { src: 'https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/char1.jpg', label: 'Character 1', desc: 'Warm & Clear' },
+                      { src: 'https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/char2.jpg', label: 'Character 2', desc: 'Deep & Smooth' },
+                      { src: 'https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/char3.jpg', label: 'Character 3', desc: 'Bright & Energetic' },
+                      { src: 'https://athena-user-assets.s3.eu-north-1.amazonaws.com/allAthenaAssets/download+(1).jpg', label: 'Character 4', desc: 'Calm & Soothing' },
+                    ].map((c, i) => (
+                      <div key={i} className="relative">
+                        <button
+                          type="button"
+                          onClick={() => { 
+                            setSelectedAvatarIndex(i); 
+                            setUploadedVoiceFile(null);
+                            // Auto-start preview when selected
+                            setPlayingVoice(i);
+                            setTimeout(() => setPlayingVoice(null), 3000);
+                          }}
+                          className={`group relative overflow-hidden rounded-3xl transition-all duration-500 w-full ${
+                            selectedAvatarIndex === i 
+                              ? 'ring-2 ring-cyan-400 shadow-2xl shadow-cyan-400/30 scale-105' 
+                              : 'ring-1 ring-white/10 hover:ring-2 hover:ring-white/30 hover:scale-105 hover:shadow-2xl'
+                          }`}
+                        >
+                          {/* Image */}
+                          <div className="aspect-[3/4] overflow-hidden">
+                            <img 
+                              src={c.src} 
+                              alt={c.label} 
+                              className={`h-full w-full object-cover transition-all duration-700 ${
+                                selectedAvatarIndex === i ? 'scale-110 brightness-110' : 'group-hover:scale-110 group-hover:brightness-110'
+                              }`}
+                            />
+                          </div>
+                          
+                          {/* Gradient overlay */}
+                          <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent transition-opacity duration-500 ${
+                            selectedAvatarIndex === i ? 'opacity-100' : 'opacity-80 group-hover:opacity-100'
+                          }`} />
+                          
+                          {/* Sound waves at bottom of image */}
+                          {playingVoice === i && (
+                            <div className="absolute bottom-8 left-0 right-0 px-6 py-2">
+                              <div className="flex items-end justify-center gap-1 h-12">
+                                {Array.from({ length: 20 }).map((_, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="w-1 bg-gradient-to-t from-cyan-400 to-blue-500 rounded-full transition-all duration-300"
+                                    style={{
+                                      height: `${20 + Math.random() * 80}%`,
+                                      animation: `soundWave ${0.6 + Math.random() * 0.4}s ease-in-out infinite alternate`,
+                                      animationDelay: `${idx * 0.05}s`
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Text content */}
+                          <div className="absolute bottom-0 left-0 right-0 p-5">
+                            <div className="text-center space-y-1">
+                              <p className="text-sm font-bold text-white tracking-wide">{c.label}</p>
+                              <p className="text-xs text-cyan-300 font-medium">{c.desc}</p>
+                            </div>
+                          </div>
 
-            {/* Bottom: Record (left) and Upload (right) */}
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {/* Record */}
-              <div className="rounded-xl bg-white/5 p-4 ring-1 ring-white/10 backdrop-blur">
-                <p className="mb-3 text-sm font-medium text-white">Record</p>
-                <button
-                  onClick={() => {
-                    if (isRecording) {
-                      stopRecording()
-                    } else {
-                      startRecording()
-                    }
-                  }}
-                  className={`relative w-full overflow-hidden rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
-                    isRecording ? 'bg-red-600' : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700'
-                  }`}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    {/* mic icon */}
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 14a3 3 0 003-3V7a3 3 0 10-6 0v4a3 3 0 003 3z" />
-                      <path d="M19 11a7 7 0 01-14 0h2a5 5 0 0010 0h2zM11 18h2v3h-2z" />
-                    </svg>
-                    {isRecording ? 'Stop Recording' : 'Start Recording'}
-                  </span>
-                  {isRecording && (
-                    <span className="absolute inset-0 -z-0 animate-pulse bg-red-500/20" />
-                  )}
-                </button>
-              </div>
-
-              {/* Upload */}
-              <div className="rounded-xl bg-white/5 p-4 ring-1 ring-white/10 backdrop-blur">
-                <p className="mb-3 text-sm font-medium text-white">Upload Voice Sample</p>
-                <label className="inline-flex w-full cursor-pointer items-center justify-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:from-cyan-600 hover:to-blue-700">
-                  <input
-                    ref={voiceUploadRef}
-                    type="file"
-                    accept=".mp3,.wav"
-                    className="hidden"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0]
-                      if (f) {
-                        setUploadedVoiceFile({ name: f.name, size: f.size })
-                        setRecordedClip(null)
-                        setSelectedAvatarIndex(null)
-                      }
-                    }}
-                  />
-                  Upload MP3/WAV
-                </label>
-              </div>
-            </div>
-
-            {/* Sliders below */}
-            <div className="mt-6 rounded-xl bg-white/5 p-4 ring-1 ring-white/10 backdrop-blur">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div>
-                  <label className="text-sm font-medium text-white">Pitch</label>
-                  <input type="range" min="0" max="100" defaultValue="50" className="mt-2 w-full accent-indigo-400" />
+                          {/* Selected indicator with pulse */}
+                          {selectedAvatarIndex === i && (
+                            <div className="absolute top-4 right-4">
+                              <div className="relative">
+                                <div className="absolute inset-0 bg-cyan-400 rounded-full animate-ping opacity-75"></div>
+                                <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-cyan-400 shadow-xl">
+                                  <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Play preview button with glow */}
+                          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${
+                            selectedAvatarIndex === i ? 'opacity-0 scale-50' : 'opacity-0 group-hover:opacity-100 group-hover:scale-110'
+                          }`}>
+                            <div className="relative">
+                              <div className="absolute inset-0 bg-white/50 rounded-full blur-xl"></div>
+                              <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-2xl">
+                                <svg className="h-7 w-7 text-slate-900 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M8 5v14l11-7z" />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-white">Speed</label>
-                  <input type="range" min="0" max="100" defaultValue="50" className="mt-2 w-full accent-indigo-400" />
+              )}
+
+              {/* Upload Voice Section */}
+              {voiceMode === 'upload' && (
+                <div className="max-w-2xl mx-auto animate-fadeIn">
+                  <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/10 to-white/5 p-10 ring-1 ring-white/20 backdrop-blur-xl transition-all duration-500 hover:ring-2 hover:ring-cyan-400/50 hover:shadow-2xl hover:shadow-cyan-400/20 hover:scale-[1.02]">
+                    {/* Animated background effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div className="relative text-center space-y-6">
+                      {/* Icon */}
+                      <div className="flex justify-center">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-cyan-400/20 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
+                          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/20 to-blue-500/20 ring-1 ring-cyan-400/30 group-hover:scale-110 transition-transform duration-500">
+                            <svg className="h-10 w-10 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Text */}
+                      <div className="space-y-2">
+                        <h4 className="text-xl font-bold text-white">Upload Your Voice</h4>
+                        <p className="text-sm text-white/70 max-w-md mx-auto leading-relaxed">
+                          Upload a clear audio file (MP3 or WAV) and we'll clone your voice using advanced AI
+                        </p>
+                      </div>
+
+                      {/* Upload button */}
+                      <label className="inline-block cursor-pointer">
+                        <input
+                          ref={voiceUploadRef}
+                          type="file"
+                          accept=".mp3,.wav"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0]
+                            if (f) {
+                              setUploadedVoiceFile({ name: f.name, size: f.size })
+                              setSelectedAvatarIndex(null)
+                            }
+                          }}
+                        />
+                        <div className="inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-10 py-4 text-base font-bold text-white shadow-xl shadow-cyan-500/30 transition-all duration-300 hover:from-cyan-600 hover:to-blue-700 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/40">
+                          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                          Choose Audio File
+                        </div>
+                      </label>
+
+                      {/* Upload indicator */}
+                      {uploadedVoiceFile && (
+                        <div className="pt-6 border-t border-white/10">
+                          <div className="flex items-center justify-between rounded-2xl bg-white/10 px-6 py-4 ring-1 ring-white/20">
+                            <div className="flex items-center gap-4">
+                              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg">
+                                <svg className="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                                </svg>
+                              </div>
+                              <div className="text-left">
+                                <p className="text-sm font-bold text-white">{uploadedVoiceFile.name}</p>
+                                <p className="text-xs text-white/60 mt-0.5">{formatSize(uploadedVoiceFile.size)}</p>
+                              </div>
+                            </div>
+                            <button 
+                              className="text-white/60 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setUploadedVoiceFile(null)
+                              }}
+                            >
+                              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-white">Tone</label>
-                  <input type="range" min="0" max="100" defaultValue="50" className="mt-2 w-full accent-indigo-400" />
+              )}
+
+              {/* Voice characteristics - Modern card style (applies to both modes) */}
+              <div className="max-w-4xl mx-auto rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.03] p-8 ring-1 ring-white/10 backdrop-blur-xl shadow-xl">
+                <div className="flex items-center justify-between mb-6">
+                  <h4 className="text-base font-bold text-white">Fine-tune Voice Settings</h4>
+                  <button className="text-xs text-cyan-400 hover:text-cyan-300 font-medium transition">Reset to Default</button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-semibold text-white/90 flex items-center gap-2">
+                        <svg className="h-4 w-4 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 3v9.28l6.36 6.36a1 1 0 010 1.41l-1.41 1.41a1 1 0 01-1.41 0L9.18 15.1A7 7 0 1112 3zm0 2a5 5 0 105 5V5h-5z"/>
+                        </svg>
+                        Pitch
+                      </label>
+                      <span className="text-sm font-bold text-cyan-400">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" defaultValue="50" className="w-full accent-cyan-400 h-2 rounded-full" />
+                    <p className="text-xs text-white/50">Adjust voice highness</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-semibold text-white/90 flex items-center gap-2">
+                        <svg className="h-4 w-4 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M13 4.055L18.943 10 13 15.945v-4.834C5.25 11.111 1.667 18.889 1.667 18.889s.833-8.334 11.333-9.722V4.055z"/>
+                        </svg>
+                        Speed
+                      </label>
+                      <span className="text-sm font-bold text-cyan-400">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" defaultValue="50" className="w-full accent-cyan-400 h-2 rounded-full" />
+                    <p className="text-xs text-white/50">Control speech pace</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-semibold text-white/90 flex items-center gap-2">
+                        <svg className="h-4 w-4 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm1-13h-2v6h2zm0 8h-2v2h2z"/>
+                        </svg>
+                        Tone
+                      </label>
+                      <span className="text-sm font-bold text-cyan-400">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" defaultValue="50" className="w-full accent-cyan-400 h-2 rounded-full" />
+                    <p className="text-xs text-white/50">Modify voice warmth</p>
+                  </div>
                 </div>
               </div>
             </div>
-
-            {/* Selection summary chips */}
-            {(recordedClip || uploadedVoiceFile || selectedAvatarIndex !== null) && (
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                {selectedAvatarIndex !== null && (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/20">
-                    Avatar {selectedAvatarIndex + 1}
-                  </span>
-                )}
-                {recordedClip && (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/20">
-                    Recorded • {recordedClip.duration}
-                  </span>
-                )}
-                {uploadedVoiceFile && (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/20">
-                    {uploadedVoiceFile.name}
-                  </span>
-                )}
-              </div>
-            )}
 
             <div className="mt-8 flex justify-end">
-              <button onClick={goNext} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:from-cyan-500 hover:to-blue-600 hover:scale-105">
+              <button onClick={goNext} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:from-cyan-500 hover:to-blue-600 hover:scale-105 shadow-lg shadow-cyan-400/20">
                 Next
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
