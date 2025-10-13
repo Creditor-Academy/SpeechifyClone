@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import InstructionCarousel from "./instruction"
+
+
 
 function StepCard({ children, stepNumber, title, icon, description }) {
   const [visible, setVisible] = useState(false)
@@ -560,7 +563,16 @@ export default function MainSection() {
           </StepCard>
         )}
       </div>
+      <InstructionCarousel />
+      
     </section>
+    
+
+    
   )
+  
+
 }
+
+
 
