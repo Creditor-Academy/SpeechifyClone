@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import InstructionCarousel from "./instruction"
+
 
 
 
@@ -694,7 +694,7 @@ export default function MainSection() {
           </StepCard>
         )}
       </div>
-      <InstructionCarousel />
+      
       
     </section>
     
