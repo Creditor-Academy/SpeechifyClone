@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "lucide-react": "^0.545.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.4.296",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-pdf": "^10.2.0"
+    "react-pdf": "^10.2.0",
+    "react-pdf-highlighter": "^8.0.0-rc.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
