@@ -1,6 +1,7 @@
 import HeroSection from '../components/Dashboard/herosection'
 import MainSection from '../components/Dashboard/MainSection'
-import Instruction from '../components/Dashboard/instruction';
+import Avatar from '../components/Dashboard/avatar'
+import Pdfview from '../components/Dashboard/pdfview'; 
 
 
 export default function Dashboard() {
@@ -8,7 +9,8 @@ export default function Dashboard() {
     <main>
       <HeroSection />
       <MainSection />
-      <Instruction /> 
+      <Avatar />
+      <Pdfview /> 
     </main>
   )
 }
