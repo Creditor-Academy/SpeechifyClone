@@ -122,14 +122,14 @@ export default function PdfEditor() {
       x: Math.min(startPos.x, endX),
       y: startPos.y,
       width: Math.abs(endX - startPos.x),
-      height: currentTool === 'highlight' ? 20 : 3,
+      height: currentTool === 'highlight' ? 14 : 3,
       page: pageNumber,
       color: currentColor,
       // Store PDF coordinates for accurate saving
       pdfX: Math.min(startPos.pdfX, coords.pdfX),
       pdfY: startPos.pdfY,
       pdfWidth: Math.abs(coords.pdfX - startPos.pdfX),
-      pdfHeight: currentTool === 'highlight' ? 20 / pdfScale : 3 / pdfScale,
+      pdfHeight: currentTool === 'highlight' ? 14 / pdfScale : 3 / pdfScale,
       scale: pdfScale,
       id: Date.now() + Math.random()
     };
@@ -420,36 +420,36 @@ export default function PdfEditor() {
           height: 8px;
         }
         .pdf-scroll-container::-webkit-scrollbar-track {
-          background: #f1f5f9;
+          background: #f0f9ff;
           border-radius: 4px;
         }
         .pdf-scroll-container::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
+          background: #0ea5e9;
           border-radius: 4px;
         }
         .pdf-scroll-container::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
+          background: #0284c7;
         }
         .pdf-scroll-container::-webkit-scrollbar-corner {
-          background: #f1f5f9;
+          background: #f0f9ff;
         }
       `}</style>
       
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex flex-col items-center py-8 px-4">
+      <div className="min-h-screen bg-gradient-to-br from-white via-sky-50 to-blue-100 flex flex-col items-center py-8 px-4">
       {/* Header Section */}
       <div className="w-full max-w-6xl text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center">
             <FileText className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-slate-800">PDF Editor</h1>
+          <h1 className="text-4xl font-bold text-blue-800">PDF Editor</h1>
         </div>
-        <p className="text-lg text-slate-600 mb-6">
+        <p className="text-lg text-blue-600 mb-6">
           Edit PDFs by adding highlights and underlines - Save as a new file with permanent changes
         </p>
 
         {/* Upload Section - Improved Styling */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-blue-200 p-8 max-w-md mx-auto mb-8">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-sky-200 p-8 max-w-md mx-auto mb-8">
           <label className="cursor-pointer block">
             <input
               type="file"
@@ -457,15 +457,15 @@ export default function PdfEditor() {
               onChange={handleFileUpload}
               className="hidden"
             />
-            <div className="flex flex-col items-center justify-center gap-4 p-6 border-2 border-dashed border-blue-300 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all duration-300">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                <Upload className="w-8 h-8 text-blue-600" />
+            <div className="flex flex-col items-center justify-center gap-4 p-6 border-2 border-dashed border-sky-300 rounded-xl hover:border-sky-500 hover:bg-sky-50 transition-all duration-300">
+              <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center">
+                <Upload className="w-8 h-8 text-sky-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold text-slate-800 mb-1">
+                <p className="text-lg font-semibold text-blue-800 mb-1">
                   Upload PDF File
                 </p>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-blue-500">
                   Click to browse or drag and drop
                 </p>
               </div>
@@ -485,14 +485,14 @@ export default function PdfEditor() {
       </div>
 
       {/* Main Content */}
-      <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8">
+      <div className="w-full max-w-6xl flex flex-col gap-8">
         {/* PDF Display Section */}
         {memoizedFile && (
-          <div className="flex-1">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-blue-200 p-6">
+          <div className="w-full">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-sky-200 p-6">
               {/* Editing Toolbar */}
-              <div className="mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <h3 className="font-semibold text-slate-800 mb-3">Editing Tools</h3>
+              <div className="mb-6 p-4 bg-sky-50 rounded-xl border border-sky-200">
+                <h3 className="font-semibold text-blue-800 mb-3">Editing Tools</h3>
                 
                 {/* Tool Selection */}
                 <div className="flex flex-wrap gap-2 mb-4">
@@ -500,8 +500,8 @@ export default function PdfEditor() {
                     onClick={() => setCurrentTool('underline')}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       currentTool === 'underline' 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-white text-slate-700 hover:bg-blue-50'
+                        ? 'bg-sky-600 text-white' 
+                        : 'bg-white text-blue-700 hover:bg-sky-50'
                     }`}
                   >
                     <Minus className="w-4 h-4" />
@@ -512,8 +512,8 @@ export default function PdfEditor() {
                     onClick={() => setCurrentTool('highlight')}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       currentTool === 'highlight' 
-                        ? 'bg-yellow-500 text-white' 
-                        : 'bg-white text-slate-700 hover:bg-yellow-50'
+                        ? 'bg-blue-500 text-white' 
+                        : 'bg-white text-blue-700 hover:bg-blue-50'
                     }`}
                   >
                     <Highlighter className="w-4 h-4" />
@@ -524,16 +524,16 @@ export default function PdfEditor() {
                 
                 {/* Color Selection */}
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-slate-700">Color:</span>
+                  <span className="text-sm font-medium text-blue-700">Color:</span>
                   <div className="flex gap-2">
-                    {['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#000000'].map((color) => (
+                    {['#0EA5E9', '#3B82F6', '#1E40AF', '#10B981', '#F59E0B', '#000000'].map((color) => (
                       <button
                         key={color}
                         onClick={() => setCurrentColor(color)}
                         className={`w-8 h-8 rounded-full border-2 transition-all ${
                           currentColor === color 
-                            ? 'border-slate-400 scale-110' 
-                            : 'border-slate-200 hover:border-slate-300'
+                            ? 'border-blue-400 scale-110' 
+                            : 'border-sky-200 hover:border-sky-300'
                         }`}
                         style={{ backgroundColor: color }}
                       />
@@ -543,16 +543,16 @@ export default function PdfEditor() {
                     type="color"
                     value={currentColor}
                     onChange={(e) => setCurrentColor(e.target.value)}
-                    className="w-8 h-8 rounded border border-slate-200 cursor-pointer"
+                    className="w-8 h-8 rounded border border-sky-200 cursor-pointer"
                   />
                 </div>
                 
                 {/* Current Tool Info */}
-                <div className="mt-3 p-2 bg-white rounded-lg border border-slate-200">
-                  <p className="text-sm text-slate-600">
-                    <span className="font-medium">Active Tool:</span> 
-                    <span className="capitalize">{currentTool}</span>
-                    {' (Click and drag to draw)'}
+                <div className="mt-3 p-2 bg-white rounded-lg border border-sky-200">
+                  <p className="text-sm text-blue-600">
+                    <span className="font-medium text-blue-700">Active Tool:</span> 
+                    <span className="capitalize text-blue-800">{currentTool}</span>
+                    <span className="text-blue-600">{' (Click and drag to draw)'}</span>
                   </p>
                 </div>
               </div>
@@ -560,40 +560,40 @@ export default function PdfEditor() {
               {/* Controls Header */}
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <MousePointer className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 bg-sky-100 rounded-lg flex items-center justify-center">
+                    <MousePointer className="w-5 h-5 text-sky-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-800">PDF Editor</h3>
-                    <p className="text-sm text-slate-500">Select tool and drag to annotate</p>
+                    <h3 className="font-semibold text-blue-800">PDF Editor</h3>
+                    <p className="text-sm text-blue-500">Select tool and drag to annotate</p>
                   </div>
                 </div>
 
                 {/* Page Navigation */}
                 {numPages > 1 && (
-                  <div className="flex items-center gap-4 bg-slate-100 rounded-xl px-4 py-2">
+                  <div className="flex items-center gap-4 bg-sky-100 rounded-xl px-4 py-2">
                     <button
                       onClick={() => setPageNumber(Math.max(1, pageNumber - 1))}
                       disabled={pageNumber === 1}
-                      className="p-2 bg-white rounded-lg shadow-sm hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="p-2 bg-white rounded-lg shadow-sm hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      <ChevronLeft className="w-5 h-5 text-slate-700" />
+                      <ChevronLeft className="w-5 h-5 text-blue-700" />
                     </button>
                     
-                    <div className="flex items-center gap-2 text-slate-700">
+                    <div className="flex items-center gap-2 text-blue-700">
                       <span className="font-medium">Page</span>
                       <span className="bg-white px-3 py-1 rounded-lg font-semibold">
                         {pageNumber}
                       </span>
-                      <span className="text-slate-500">of {numPages}</span>
+                      <span className="text-blue-500">of {numPages}</span>
                     </div>
                     
                     <button
                       onClick={() => setPageNumber(Math.min(numPages, pageNumber + 1))}
                       disabled={pageNumber === numPages}
-                      className="p-2 bg-white rounded-lg shadow-sm hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="p-2 bg-white rounded-lg shadow-sm hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      <ChevronRight className="w-5 h-5 text-slate-700" />
+                      <ChevronRight className="w-5 h-5 text-blue-700" />
                     </button>
                   </div>
                 )}
@@ -602,7 +602,7 @@ export default function PdfEditor() {
               {/* PDF Container */}
               <div
                 ref={containerRef}
-                className="border-2 border-slate-200 bg-white rounded-xl shadow-inner"
+                className="border-2 border-sky-200 bg-white rounded-xl shadow-inner"
                 style={{ 
                   height: "75vh", 
                   minHeight: "600px",
@@ -614,7 +614,7 @@ export default function PdfEditor() {
                   className="pdf-scroll-container overflow-y-auto overflow-x-auto w-full h-full flex justify-center"
                   style={{
                     scrollbarWidth: 'thin',
-                    scrollbarColor: '#cbd5e1 #f1f5f9'
+                    scrollbarColor: '#0ea5e9 #f0f9ff'
                   }}
                 >
                   <div className="relative p-4 flex justify-center items-start min-h-full">
@@ -695,177 +695,176 @@ export default function PdfEditor() {
           </div>
         )}
 
-        {/* Sidebar - Stats & Actions */}
+        {/* Document Info Section - Bottom */}
         {memoizedFile && (
-          <div className="w-full lg:w-80">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-blue-200 p-6 sticky top-8">
-              {/* Stats */}
-              <div className="space-y-4 mb-6">
-                <h3 className="font-semibold text-slate-800 text-lg mb-4">Document Info</h3>
-                
-                <div className="space-y-3">
-                  <div className="bg-blue-50 rounded-xl p-4 text-center">
-                    <div className="text-2xl font-bold text-blue-600">{numPages}</div>
-                    <div className="text-sm text-slate-600">Total Pages</div>
-                  </div>
+          <div className="w-full">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-sky-200 p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Document Stats */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-blue-800 text-lg mb-4">Document Info</h3>
                   
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-green-50 rounded-xl p-3 text-center">
-                      <div className="text-xl font-bold text-green-600">
-                        {annotations.length}
-                      </div>
-                      <div className="text-xs text-slate-600">Total</div>
+                  <div className="space-y-3">
+                    <div className="bg-sky-50 rounded-xl p-4 text-center border border-sky-200">
+                      <div className="text-2xl font-bold text-sky-600">{numPages}</div>
+                      <div className="text-sm text-blue-600">Total Pages</div>
                     </div>
                     
-                    <div className="bg-yellow-50 rounded-xl p-3 text-center">
-                      <div className="text-xl font-bold text-yellow-600">
-                        {annotations.filter(a => a.page === pageNumber).length}
-                      </div>
-                      <div className="text-xs text-slate-600">This Page</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-slate-50 rounded-xl p-4">
-                  <div className="text-sm text-slate-600 mb-2">Current File</div>
-                  <div className="font-medium text-slate-800 truncate">{fileName}</div>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-slate-800 text-lg">Actions</h3>
-                
-                <button
-                  onClick={handleSavePDF}
-                  disabled={!fileData || annotations.length === 0 || isDownloading}
-                  className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-green-600 disabled:hover:to-green-700"
-                >
-                  {isDownloading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Generating PDF...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-5 h-5" />
-                      {annotations.length === 0 ? 'Add annotations to download' : `Download PDF (${annotations.length} edits)`}
-                    </>
-                  )}
-                </button>
-
-                <button
-                  onClick={() => setAnnotations([])}
-                  disabled={annotations.length === 0}
-                  className="w-full flex items-center justify-center gap-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 px-6 rounded-xl border border-slate-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Clear All Annotations
-                </button>
-              </div>
-              
-              {/* Recent Downloads */}
-              {recentDownloads.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="font-semibold text-slate-800 text-lg mb-4">Recent Downloads</h3>
-                  <div className="space-y-3">
-                    {recentDownloads.map((download) => (
-                      <div key={download.id} className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                              </svg>
-                              <p className="text-sm font-medium text-slate-800 truncate">
-                                {download.fileName.length > 20 ? 
-                                  `${download.fileName.substring(0, 20)}...` : 
-                                  download.fileName
-                                }
-                              </p>
-                            </div>
-                            <p className="text-xs text-slate-500">
-                              {download.downloadTime}
-                            </p>
-                            <p className="text-xs text-green-600 font-medium">
-                              {download.annotations} annotations • Downloaded to laptop
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => {
-                              // Show file location info
-                              const locationToast = document.createElement('div');
-                              locationToast.className = 'fixed top-4 right-4 bg-blue-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-sm';
-                              locationToast.innerHTML = `
-                                <div class="text-sm">
-                                  <div class="font-medium mb-1">File Location</div>
-                                  <div class="text-xs opacity-90">Check your Downloads folder:</div>
-                                  <div class="text-xs font-mono bg-blue-700 px-2 py-1 rounded mt-1">
-                                    ~/Downloads/${download.fileName}
-                                  </div>
-                                </div>
-                              `;
-                              document.body.appendChild(locationToast);
-                              setTimeout(() => {
-                                if (locationToast.parentNode) {
-                                  locationToast.parentNode.removeChild(locationToast);
-                                }
-                              }, 5000);
-                            }}
-                            className="text-blue-600 hover:text-blue-800 text-xs font-medium"
-                          >
-                            Show Location
-                          </button>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-blue-50 rounded-xl p-3 text-center border border-blue-200">
+                        <div className="text-xl font-bold text-blue-600">
+                          {annotations.length}
                         </div>
+                        <div className="text-xs text-blue-600">Total</div>
                       </div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                      </svg>
-                      <h4 className="font-semibold text-blue-800 text-sm">Download Location</h4>
+                      
+                      <div className="bg-sky-50 rounded-xl p-3 text-center border border-sky-200">
+                        <div className="text-xl font-bold text-sky-600">
+                          {annotations.filter(a => a.page === pageNumber).length}
+                        </div>
+                        <div className="text-xs text-blue-600">This Page</div>
+                      </div>
                     </div>
-                    <p className="text-xs text-blue-700">
-                      Files are saved to your <strong>Downloads</strong> folder. You can find them in:
-                    </p>
-                    <ul className="text-xs text-blue-600 mt-1 ml-4">
-                      <li>• Windows: C:\Users\[username]\Downloads</li>
-                      <li>• Mac: /Users/[username]/Downloads</li>
-                      <li>• Linux: /home/[username]/Downloads</li>
+                  </div>
+
+                  <div className="bg-sky-50 rounded-xl p-4 border border-sky-200">
+                    <div className="text-sm text-blue-600 mb-2">Current File</div>
+                    <div className="font-medium text-blue-800 truncate">{fileName}</div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-blue-800 text-lg">Actions</h3>
+                  
+                  <button
+                    onClick={handleSavePDF}
+                    disabled={!fileData || annotations.length === 0 || isDownloading}
+                    className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-700 hover:to-blue-800 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-sky-600 disabled:hover:to-blue-700"
+                  >
+                    {isDownloading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Generating PDF...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-5 h-5" />
+                        {annotations.length === 0 ? 'Add annotations to download' : `Download PDF (${annotations.length} edits)`}
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setAnnotations([])}
+                    disabled={annotations.length === 0}
+                    className="w-full flex items-center justify-center gap-3 bg-sky-100 hover:bg-sky-200 text-blue-700 font-medium py-3 px-6 rounded-xl border border-sky-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Clear All Annotations
+                  </button>
+
+                  {/* Instructions */}
+                  <div className="p-4 bg-sky-50 rounded-xl border border-sky-200">
+                    <h4 className="font-semibold text-blue-800 text-sm mb-2">How to use:</h4>
+                    <ul className="text-sm text-blue-600 space-y-1">
+                      <li>• Select highlight or underline tool</li>
+                      <li>• Choose your preferred color</li>
+                      <li>• Click and drag over text to edit</li>
+                      <li>• Download saves to Downloads folder</li>
                     </ul>
                   </div>
                 </div>
-              )}
 
-              {/* Instructions */}
-              <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
-                <h4 className="font-semibold text-slate-800 text-sm mb-2">How to use:</h4>
-                <ul className="text-sm text-slate-600 space-y-1">
-                  <li>• Select highlight or underline tool</li>
-                  <li>• Choose your preferred color</li>
-                  <li>• Click and drag over text to edit</li>
-                  <li>• Download saves to your laptop's Downloads folder</li>
-                  <li>• View recent downloads in the sidebar</li>
-                </ul>
+                {/* Recent Downloads */}
+                <div className="space-y-4">
+                  {recentDownloads.length > 0 && (
+                    <>
+                      <h3 className="font-semibold text-blue-800 text-lg mb-4">Recent Downloads</h3>
+                      <div className="space-y-3 max-h-64 overflow-y-auto">
+                        {recentDownloads.map((download) => (
+                          <div key={download.id} className="bg-sky-50 rounded-xl p-4 border border-sky-200">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                                  </svg>
+                                  <p className="text-sm font-medium text-blue-800 truncate">
+                                    {download.fileName.length > 15 ? 
+                                      `${download.fileName.substring(0, 15)}...` : 
+                                      download.fileName
+                                    }
+                                  </p>
+                                </div>
+                                <p className="text-xs text-blue-500">
+                                  {download.downloadTime}
+                                </p>
+                                <p className="text-xs text-sky-600 font-medium">
+                                  {download.annotations} annotations
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  // Show file location info
+                                  const locationToast = document.createElement('div');
+                                  locationToast.className = 'fixed top-4 right-4 bg-sky-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-sm';
+                                  locationToast.innerHTML = `
+                                    <div class="text-sm">
+                                      <div class="font-medium mb-1">File Location</div>
+                                      <div class="text-xs opacity-90">Check your Downloads folder:</div>
+                                      <div class="text-xs font-mono bg-sky-700 px-2 py-1 rounded mt-1">
+                                        ~/Downloads/${download.fileName}
+                                      </div>
+                                    </div>
+                                  `;
+                                  document.body.appendChild(locationToast);
+                                  setTimeout(() => {
+                                    if (locationToast.parentNode) {
+                                      locationToast.parentNode.removeChild(locationToast);
+                                    }
+                                  }, 5000);
+                                }}
+                                className="text-sky-600 hover:text-sky-800 text-xs font-medium"
+                              >
+                                Show Location
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="p-3 bg-sky-50 rounded-lg border border-sky-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <svg className="w-4 h-4 text-sky-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                          </svg>
+                          <h4 className="font-semibold text-blue-800 text-sm">Download Location</h4>
+                        </div>
+                        <p className="text-xs text-blue-700">
+                          Files are saved to your <strong>Downloads</strong> folder.
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         )}
+
       </div>
 
       {/* Empty State */}
       {!memoizedFile && (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
-            <div className="w-24 h-24 bg-blue-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <FileText className="w-12 h-12 text-blue-600" />
+            <div className="w-24 h-24 bg-sky-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <FileText className="w-12 h-12 text-sky-600" />
             </div>
-            <h3 className="text-xl font-semibold text-slate-800 mb-2">
+            <h3 className="text-xl font-semibold text-blue-800 mb-2">
               No PDF Uploaded
             </h3>
-            <p className="text-slate-600 mb-4">
+            <p className="text-blue-600 mb-4">
               Upload a PDF file to start underlining text and editing your document.
             </p>
           </div>
