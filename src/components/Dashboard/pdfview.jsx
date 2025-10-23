@@ -23,7 +23,7 @@ export default function PdfEditor() {
   const containerRef = useRef(null);
   const pdfPageRef = useRef(null);
 
-  // 🟦 Upload PDF
+  // Upload PDF
   const handleFileUpload = async (e) => {
     const uploaded = e.target.files[0];
     if (!uploaded || uploaded.type !== "application/pdf") {
@@ -48,14 +48,14 @@ export default function PdfEditor() {
     }
   };
 
-  // 🟦 When PDF loads successfully
+  // When PDF loads successfully
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
     setPageNumber(1);
     setAnnotations([]); // Clear annotations when new PDF loads
   };
 
-  // 🟦 When PDF page loads successfully
+  // When PDF page loads successfully
   const onPageLoadSuccess = (page) => {
     const { width, height } = page.originalWidth ? 
       { width: page.originalWidth, height: page.originalHeight } : 
@@ -69,7 +69,7 @@ export default function PdfEditor() {
     }
   };
 
-  // 🟦 Get PDF page coordinates relative to PDF content
+  // Get PDF page coordinates relative to PDF content
   const getPdfCoordinates = (clientX, clientY) => {
     if (!pdfPageRef.current) return null;
     
@@ -93,7 +93,7 @@ export default function PdfEditor() {
     };
   };
 
-  // 🟦 Start drawing underline/highlight
+  // Start drawing underline/highlight
   const handleMouseDown = (e) => {
     if (!fileData) return;
     
@@ -104,7 +104,7 @@ export default function PdfEditor() {
     setStartPos(coords);
   };
 
-  // 🟦 Finish drawing underline/highlight
+  // Finish drawing underline/highlight
   const handleMouseUp = (e) => {
     if (!isDrawing) return;
     setIsDrawing(false);
